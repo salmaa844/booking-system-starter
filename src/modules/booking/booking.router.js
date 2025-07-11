@@ -12,3 +12,28 @@
 // 1. Fetch the user who owns the booking.
 // 2. Send them an email using the sendEmail utility.
 //    Example: "Your booking on [date] at [time] has been updated."
+
+import { Router } from "express";
+import asyncHandler from "../../utils/asyncHandler.js";
+import * as controller from "./booking.controller.js"
+import authenticatJWT from "../../middlewares/authMiddleware.js";
+import ROLES from "../../../Database/roles.js";
+
+
+const bookingRouter = Router();
+
+bookingRouter.post("/",authenticatJWT([ROLES.USER]),asyncHandler(controller.createBooking))
+
+bookingRouter.get("/",authenticatJWT([ROLES.ADMIN]),asyncHandler(controller.getAllBooking))
+
+bookingRouter.get("/my",authenticatJWT([ROLES.USER]),asyncHandler(controller.getMyBooking))
+
+bookingRouter.get("/:id",authenticatJWT([ROLES.ADMIN]),asyncHandler(controller.getBookingByID))
+
+bookingRouter.put("/:id",authenticatJWT([ROLES.ADMIN]),asyncHandler(controller.updateBooking))
+
+bookingRouter.delete("/:id",authenticatJWT([ROLES.ADMIN]),asyncHandler(controller.deleteBooking))
+
+bookingRouter.patch("/:id/status",authenticatJWT([ROLES.ADMIN]),asyncHandler(controller.changeStatusOfBooking))
+
+export default bookingRouter;
