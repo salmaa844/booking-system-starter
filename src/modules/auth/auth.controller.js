@@ -4,7 +4,7 @@ const Register = async (req, res, next) => {
     const result = await authService.Register(name, email, password, role);
     return res.status(201).json({
         message: "User registered successfully",
-        data: result
+        newUser: result
     })
 }
 
