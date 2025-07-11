@@ -16,15 +16,16 @@ const getUsersByID = async(req,res,next)=>{
 const updateUsers = async(req,res,next)=>{
     const user =req.body;
     const {id} = req.params;
-    const updateUser = await userService.updateUsers(user,id);
+    const userData = req.user;
+    await userService.updateUsers(user,id,userData);
     return res.status(200).json({
-        message:"updated User success",
-        updateUser
+        message:"updated User success"
     })
 }
 const deleteUsers = async(req,res,next)=>{
     const {id} = req.params;
-    await userService.deleteUsers(id);
+    const userData = req.user;
+    await userService.deleteUsers(id,userData);
     return res.status(200).json({
         message:"deleted successful "
     })

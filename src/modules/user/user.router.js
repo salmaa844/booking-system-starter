@@ -15,6 +15,6 @@ const userRouter = Router();
 userRouter.get("/",authenticatJWT([ROLES.ADMIN]),asyncHandler(controller.getAllUsers));
 userRouter.get("/:id",authenticatJWT([ROLES.ADMIN,ROLES.USER]),asyncHandler(controller.getUsersByID));
 userRouter.put("/:id",authenticatJWT([ROLES.ADMIN,ROLES.USER]),asyncHandler(controller.updateUsers));
-userRouter.delete("/:id",asyncHandler(controller.deleteUsers));
+userRouter.delete("/:id",authenticatJWT([ROLES.ADMIN,ROLES.USER]),asyncHandler(controller.deleteUsers));
 
 export default userRouter;
