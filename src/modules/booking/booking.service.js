@@ -37,45 +37,29 @@ const getBookingByID = async (id) => {
 }
 const updateBooking = async (bookingId, date, time, status) => {
 
-    const existingBooking = await bookingQuery.getBookingByID(bookingId);
-    if (!existingBooking) throw new AppError("Booking not found", 404);
-
-    const user = await userQuery.getUsersByID(existingBooking.userId);
-    if (!user) throw new AppError("User not found", 404);
-
-    await bookingQuery.updateBooking(bookingId, { date, time, status });
-
-    await sendSystemEmail("updateBooking", user.email, { date, time, status });
-
-    const updatedBooking = await bookingQuery.getBookingByID(bookingId);
-
-    return updatedBooking;
+  const existingBooking = await bookingQuery.getBookingByID(bookingId);
+  if (!existingBooking) throw new AppError("Booking not found", 404); 
+  await bookingQuery.updateBooking(bookingId, { date, time, status });
+  const user = await userQuery.getUsersByID(existingBooking.userId);
+  await sendSystemEmail("updateBooking", user.email, { date, time, status });
+  const updatedBooking = await bookingQuery.getBookingByID(bookingId);
+  return updatedBooking;
 };
 const deleteBooking = async (id) => {
   const existingBooking = await bookingQuery.getBookingByID(id);
-  if (!existingBooking) {
-    throw new AppError("Booking not found", 404);
-  }
+  if (!existingBooking) throw new AppError("Booking not found", 404);
   const datadeleted = await bookingQuery.deleteBooking(existingBooking);
   return datadeleted;
 }
 const changeStatusOfBooking = async (id, status) => {
   const existingBooking = await bookingQuery.getBookingByID(id);
-  if (!existingBooking) {
-    throw new AppError("Booking not found", 404);
-  }
-
+  if (!existingBooking) throw new AppError("Booking not found", 404);
   const allowedStatus = ["pending", "confirmed", "cancelled"];
   if (!status || !allowedStatus.includes(status)) {
     throw new AppError("Invalid status value", 400);
   }
-
   const updatedRows = await bookingQuery.changeStatusOfBooking(id, status);
-
-  if (updatedRows === 0) {
-    throw new AppError("No changes made", 400);
-  }
-
+  if (updatedRows === 0)  throw new AppError("No changes made", 400);
   const updatedBooking = await bookingQuery.getBookingByID(id);
   return updatedBooking;
 };

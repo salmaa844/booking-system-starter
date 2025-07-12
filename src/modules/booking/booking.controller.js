@@ -39,9 +39,9 @@ const getMyBooking = async (req, res, next) => {
 }
 const getBookingByID = async (req, res, next) => {
     const { id } = req.params;
-    const result = await bookingService.getBookingByID(id);
+    const booking = await bookingService.getBookingByID(id);
     return res.status(200).json({
-        result
+        booking
     })
 }
 const updateBooking = async (req, res, next) => {
