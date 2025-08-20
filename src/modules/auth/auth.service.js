@@ -29,6 +29,9 @@ const Register = async (name, email, password, role) => {
 const login = async (email, password) => {
     const user = await authQuery.FindUserByEmail(email);
     if (!user) throw new AppError("Email not found", 401);
+     if (!user.isConfirmed) {
+    throw new AppError("Please confirm your email before logging in", 403);
+    }
     const isMatch = await bcrypt.compareHash(password, user.password);
     if (!isMatch) throw new AppError("Incorrect password", 401);
     const token = generateToken({
