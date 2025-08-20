@@ -3,14 +3,23 @@ import * as bookingQuery from "./booking.data.js"
 import * as userQuery from "./../user/user.data.js"
 import { sendSystemEmail } from "../../utils/email/sendEmail.js"
 
-const createBooking = async (userId, date, time, status = 'pending') => {
-  const data = { userId, date, time, status }
+const createBooking = async (userId, date, time, status = "pending") => {
   if (!date || !time) {
     throw new AppError("Date and time are required.", 400);
   }
-  const newbook = await bookingQuery.createBooking(data);
-  return { userId, date, time, status };
-}
+
+  const data = { userId, date, time, status };
+
+  const existingBooking = await bookingQuery.findBookingByDateAndTime(date, time);
+
+  if (existingBooking) {
+    throw new AppError("This time slot is already booked!", 400);
+  }
+
+  const newBooking = await bookingQuery.createBooking(data);
+
+  return newBooking;
+};
 const getAllBooking = async (limit, offset) => {
   const booking = await bookingQuery.getAllBooking(limit, offset)
   if (booking.count === 0) {
@@ -35,13 +44,13 @@ const getBookingByID = async (id) => {
   return existBooking;
 
 }
-const updateBooking = async (bookingId, date, time, status) => {
+const updateBooking = async (bookingId, data) => {
 
   const existingBooking = await bookingQuery.getBookingByID(bookingId);
   if (!existingBooking) throw new AppError("Booking not found", 404); 
-  await bookingQuery.updateBooking(bookingId, { date, time, status });
+  await bookingQuery.updateBooking(bookingId,data);
   const user = await userQuery.getUsersByID(existingBooking.userId);
-  await sendSystemEmail("updateBooking", user.email, { date, time, status });
+  await sendSystemEmail("updateBooking", user.email, data);
   const updatedBooking = await bookingQuery.getBookingByID(bookingId);
   return updatedBooking;
 };

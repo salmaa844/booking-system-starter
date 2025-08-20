@@ -97,7 +97,7 @@ export function getPasswordResetTemplate(code) {
     </html>
   `;
 }
-export function getBookingUpdateTemplate({ date, time}) {
+export function getBookingUpdateTemplate(data) {
     
     return `
     <!DOCTYPE html>
@@ -137,7 +137,7 @@ export function getBookingUpdateTemplate({ date, time}) {
         <div class="container">
           <h2>Your booking has been updated</h2>
           <div class="details">
-          <p>Your booking on <strong>${date}</strong> at <strong>${time}</strong> has been updated.</p>
+          <p>Your booking on <strong>${data.date}</strong> at <strong>${data.time}</strong> has been updated.</p>
           </div>
         </div>
         <div class="footer">

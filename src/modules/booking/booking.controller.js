@@ -46,8 +46,8 @@ const getBookingByID = async (req, res, next) => {
 }
 const updateBooking = async (req, res, next) => {
     const { id } = req.params;
-    const {date,time,status} = req.body;
-    const result = await bookingService.updateBooking(id,date,time,status);
+    const data= req.body;
+    const result = await bookingService.updateBooking(id,data);
     return res.status(200).json({
         message: "updated successfly",
         result

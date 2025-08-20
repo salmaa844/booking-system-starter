@@ -5,6 +5,9 @@ import Booking from "./../../../Database/models/booking.model.js"
  const createBooking = async (data) => {
   return await Booking.create(data);
 };
+export const findBookingByDateAndTime = async (date, time) => {
+  return await Booking.findOne({ where: { date, time } });
+};
 const getAllBooking= async(limit, offset)=>{
 const booking = await Booking.findAndCountAll({
          attributes: ["userId","date", "time", "status"],
